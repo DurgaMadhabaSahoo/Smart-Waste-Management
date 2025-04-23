@@ -2,8 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   currentUser: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null,
-  token: localStorage.getItem('token')||null,
-  isAuthenticated: false,
+  token: localStorage.getItem('token') || null,
+  isAuthenticated: !!localStorage.getItem('user'),
   error: null,
   loading: false,
 };
@@ -30,6 +30,7 @@ const userSlice = createSlice({
     logoutSuccess: (state) => {
       state.currentUser = null;
       state.token = null;
+      state.isAuthenticated = false; // ✅ added this
     },
     updateStart: (state) => {
       state.loading = true;
@@ -47,6 +48,17 @@ const userSlice = createSlice({
   },
 });
 
-export const { signInStart, signInSuccess, signInFailure, logoutSuccess, updateFailure, updateSuccess, updateStart } = userSlice.actions;
+export const {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+  logoutSuccess,
+  updateFailure,
+  updateSuccess,
+  updateStart,
+} = userSlice.actions;
+
+export const selectCurrentUser = (state) => state.user.currentUser;
+export const selectIsAuthenticated = (state) => state.user.isAuthenticated;
 
 export default userSlice.reducer;

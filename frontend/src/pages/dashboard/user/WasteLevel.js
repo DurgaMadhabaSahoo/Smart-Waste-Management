@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography, Paper, CircularProgress, IconButton, Grid } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Paper,
+  CircularProgress,
+  IconButton,
+  Grid,
+} from "@mui/material";
 import RecyclingIcon from "@mui/icons-material/Recycling";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import WaterDropIcon from "@mui/icons-material/WaterDrop";
@@ -13,7 +20,13 @@ const WasteLevelCard = ({ title, level, icon, color }) => (
     <Typography variant="h6" sx={{ marginY: 1 }}>
       {title}
     </Typography>
-    <CircularProgress variant="determinate" value={level} size={100} thickness={5} sx={{ color: color }} />
+    <CircularProgress
+      variant="determinate"
+      value={level}
+      size={100}
+      thickness={5}
+      sx={{ color: color }}
+    />
     <Typography variant="h6" sx={{ marginY: 1 }}>
       {level}%
     </Typography>
@@ -21,7 +34,7 @@ const WasteLevelCard = ({ title, level, icon, color }) => (
 );
 
 const WasteLevel = () => {
-  const { currentUser } = useSelector((state) => state.user);
+  const currentUser = useSelector((state) => state.user.currentUser); // Fetch currentUser from Redux
   const [wasteData, setWasteData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -83,7 +96,6 @@ const WasteLevel = () => {
       </Typography>
 
       <Grid container spacing={3} sx={{ marginTop: 2 }} alignItems="center" justifyContent="center">
-        {/* Organic Waste Level */}
         <Grid item xs={12} sm={6}>
           <WasteLevelCard
             title="Organic Waste"
@@ -93,7 +105,6 @@ const WasteLevel = () => {
           />
         </Grid>
 
-        {/* Recyclable Waste Level */}
         <Grid item xs={12} sm={6}>
           <WasteLevelCard
             title="Recyclable Waste"
@@ -103,7 +114,6 @@ const WasteLevel = () => {
           />
         </Grid>
 
-        {/* Non-Recyclable Waste Level */}
         <Grid item xs={12} sm={6}>
           <WasteLevelCard
             title="Non-Recyclable Waste"

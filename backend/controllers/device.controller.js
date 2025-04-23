@@ -10,7 +10,6 @@ const getRandomWasteLevel = () => Math.floor(Math.random() * 101);
 export const addDevice = async (req, res, next) => {
   const { wasteType, userId } = req.body;
 
-  // Validate input
   if (!wasteType || !userId) {
     return next(errorHandler(400, "Waste type and User ID are required"));
   }
@@ -20,20 +19,17 @@ export const addDevice = async (req, res, next) => {
   }
 
   try {
-    // Check if the user already has a device
     const existingDevice = await Device.findOne({ userId });
     if (existingDevice) {
       return next(errorHandler(400, "User already has a linked device"));
     }
 
-    // Generate random waste levels
     const wasteLevel = {
       organic: getRandomWasteLevel(),
       recycle: getRandomWasteLevel(),
       nonRecycle: getRandomWasteLevel(),
     };
 
-    // Create and save the new device
     const newDevice = new Device({ wasteType, wasteLevel, userId });
     await newDevice.save();
 
@@ -51,13 +47,11 @@ export const addDevice = async (req, res, next) => {
 export const getDevices = async (req, res, next) => {
   const userId = req.user?.id;
 
-  // Validate user ID
   if (!userId || !isValidObjectId(userId)) {
     return next(errorHandler(400, "Invalid or missing user ID"));
   }
 
   try {
-    // Find devices for the user
     const devices = await Device.find({ userId });
 
     if (devices.length === 0) {
@@ -86,7 +80,6 @@ export const getAllDevices = async (req, res, next) => {
 export const getDeviceByUserId = async (req, res, next) => {
   const { userId } = req.params;
 
-  // Validate user ID
   if (!isValidObjectId(userId)) {
     return res.status(400).json({ message: "Invalid User ID format." });
   }
@@ -105,18 +98,17 @@ export const getDeviceByUserId = async (req, res, next) => {
   }
 };
 
+// ✅ FIXED: Response now matches frontend structure
 // @desc    Get waste level by user ID
 // @route   GET /api/devices/wasteLevel/:userId
 export const getWasteLevelByUserId = async (req, res, next) => {
   const { userId } = req.params;
 
-  // Validate user ID
   if (!isValidObjectId(userId)) {
     return res.status(400).json({ message: "Invalid User ID format." });
   }
 
   try {
-    // Find the device and return the waste levels
     const device = await Device.findOne({ userId });
     if (!device) {
       return res.status(404).json({
@@ -124,7 +116,8 @@ export const getWasteLevelByUserId = async (req, res, next) => {
       });
     }
 
-    res.json(device.wasteLevel);
+    // ✅ Return wasteLevel wrapped inside an object
+    res.json({ wasteLevel: device.wasteLevel });
   } catch (error) {
     next(error);
   }
@@ -136,7 +129,6 @@ export const updateWasteLevel = async (req, res, next) => {
   const { userId } = req.params;
   const { wasteType, level } = req.body;
 
-  // Validate input
   if (!wasteType || !['organic', 'recycle', 'nonRecycle'].includes(wasteType)) {
     return next(errorHandler(400, "Invalid waste type. Must be 'organic', 'recycle', or 'nonRecycle'"));
   }
@@ -145,7 +137,6 @@ export const updateWasteLevel = async (req, res, next) => {
     return next(errorHandler(400, "Level must be a number between 0 and 100"));
   }
 
-  // Validate user ID format
   if (!isValidObjectId(userId)) {
     return next(errorHandler(400, "Invalid User ID"));
   }
@@ -157,7 +148,6 @@ export const updateWasteLevel = async (req, res, next) => {
       return res.status(404).json({ message: "Device not found." });
     }
 
-    // Update the waste level
     device.wasteLevel[wasteType] = level;
     await device.save();
 

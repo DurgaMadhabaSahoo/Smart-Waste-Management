@@ -62,7 +62,7 @@ const SpecialCollectionHistory = () => {
 
   const fetchCollections = async () => {
     try {
-      const res = await axios.get(`${API_URL}/specialCollection/get`);
+      const res = await axios.get(`${API_URL}/special-collections/get`);
       setCollections(res.data.data);
       setLoading(false);
     } catch (error) {
@@ -113,7 +113,7 @@ const SpecialCollectionHistory = () => {
   const confirmDelete = async () => {
     try {
       await axios.delete(
-        `${API_URL}/specialCollection/delete/${collectionToDelete._id}`
+        `${API_URL}/special-collections/delete/${collectionToDelete._id}`
       );
       setCollections(
         collections.filter((c) => c._id !== collectionToDelete._id)
